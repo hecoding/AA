@@ -11,13 +11,10 @@ ylabel("poblacion en 10.000s", "fontsize", 10);
 equis = [-10:0.1:10];
 ygriega = [-1:0.1:4];
 [equis ygriega] = meshgrid(equis, ygriega);
-zeta = zeros(size(equis));
 
-for i = 1:size(equis, 1);
-  for j = 1:size(equis, 2);
-    zeta(i, j) = cost([equis(i, j) ygriega(i, j)], X, y);
-  endfor
-endfor
+zeta = cost([vec(equis) vec(ygriega)], X, y);
+zeta = reshape(zeta, size(equis));
+
 
 figure;
 surface(equis, ygriega, zeta);
