@@ -8,8 +8,8 @@ plot(X(:, 2), y, "rx", "linewidth", 1, "markersize", 8);
 xlabel("beneficio en 10.000s", "fontsize", 10);
 ylabel("poblacion en 10.000s", "fontsize", 10);
 
-equis = [-10:0.3:10];
-ygriega = [-1:0.3:4];
+equis = [-10:0.1:10];
+ygriega = [-1:0.1:4];
 [equis ygriega] = meshgrid(equis, ygriega);
 zeta = zeros(size(equis));
 
