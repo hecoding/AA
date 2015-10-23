@@ -43,3 +43,23 @@
 %  endfor
 %  %hip = [theta0 theta1] .* x';
 %endfunction
+
+%-----------------------------------------
+
+%function theta = gradientDesc(theta, X, y, learning_rate, num_iter)
+%  m = length(y);
+
+%  for i = 1:num_iter;
+
+%    % if not in vector mode, theta components must be saved in temps
+%    % while doing the calculations
+%    theta1 = theta(1) - sum( ((h(theta, X) - y) .^2) .* X(:,1) ) *
+%learning_rate / m;
+%    theta2 = theta(2) - sum( ((h(theta, X) - y) .^2) .* X(:,2) ) *
+%learning_rate / m;
+
+%    theta = [theta1 theta2];
+
+%  endfor
+
+%endfunction
