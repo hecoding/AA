@@ -2,9 +2,10 @@ data = load("ex1data1.txt");
 m = size(data, 1);
 X = [ones(m, 1), data(:,1)];
 y = data(:, 2);
-theta = zeros(2, 1);
+theta = zeros(2, 1); % METER POR PARAMETRO
+range = [5 23];
 
-plot(X(:, 2), y, "rx", "linewidth", 1, "markersize", 8);
+plot(X(:, 2), y, "rx", "linewidth", 1, "markersize", 8, range, range * theta(2) + theta(1));
 xlabel("beneficio en 10.000s", "fontsize", 10);
 ylabel("poblacion en 10.000s", "fontsize", 10);
 
