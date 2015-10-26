@@ -6,4 +6,4 @@ theta = [0 0];
 
 [theta theta_hist] = gradientDesc(theta, X, y, 0.01, 1500);
 
-%plotting(theta, theta_hist y mas datos)
+plotting(X, y, theta, theta_hist);

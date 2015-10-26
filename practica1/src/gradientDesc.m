@@ -1,14 +1,14 @@
 function [theta theta_history] = gradientDesc(theta, X, y, learning_rate, num_iter)
   m = length(y);
   div = 100;
-  theta_history = zeros(num_iter / div, 2);
+  theta_history = zeros(num_iter / div, size(X, 2));
   count = 1;
   
   for i = 1:num_iter;
     
     % if not in vector mode, theta components must be saved in temps
     % for not to crush them while doing the calculations until the end
-    theta = theta - sum( (h(theta, X) - y) .* X ) * learning_rate / m;
+    theta = theta - sum( (X * theta' - y) .* X ) * learning_rate / m;
     
     
     
