@@ -1,4 +1,4 @@
-function [X_norm, mu, sigma] = normalizeAttrib(X)
+function [X_norm, mu, sigma] = featureNormalize(X)
   
   mu = mean(X);
   sigma = std(X);
