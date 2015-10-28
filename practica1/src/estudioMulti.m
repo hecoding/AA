@@ -53,22 +53,4 @@ function estudioMulti()
   plot(1:100:num_iter, temp, ';\alpha = 1;', 'color', 'cyan');
   hold on;
   
-  
-  
-  %equis = [1:10:num_iter];
-  %ygriega = linspace(0.001, 1, length(equis));
-  %[equis ygriega] = meshgrid(equis, ygriega);
-
-  %zeta = cost([vec(equis) vec(ygriega)], X, y); ??
-  %zeta = reshape(zeta, size(equis));
-
-
-  %figure;
-  %surface(equis, ygriega, zeta);
-  %xlabel('# iterations', 'fontsize', 10);
-  %ylabel('\alpha', 'fontsize', 10);
-  %zlabel('J(\theta)', 'fontsize', 10);
-  %view(-35, 30);
-  %grid on;
-  
 endfunction
