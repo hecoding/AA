@@ -13,7 +13,7 @@ figure; hold on;
 
 % Plot Data
 pos = find(y==1); neg = find(y == 0);
-plot(X(pos, 2), X(pos, 3), 'k+','LineWidth', 2, 'MarkerSize', 7);
+plot(X(pos, 2), X(pos, 3), 'k+', 'MarkerSize', 7); % menos grosor, mas bonito
 plot(X(neg, 2), X(neg, 3), 'ko', 'MarkerFaceColor', 'y','MarkerSize', 7);
 
 
