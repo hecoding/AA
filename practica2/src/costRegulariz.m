@@ -1,8 +1,13 @@
-function [J, grad] = cost(theta, X, y, lambda)
+function [J, grad] = costRegulariz(theta, X, y, lambda)
 % theta is a row vector
   m = length(y);
   
-  %J = ;
-  %grad = ;
+  J = (
+        -sum( y .* log(sig(X * theta')) + (1 - y) .* log(1 - sig(X * theta')) )
+       +
+        lambda/2 * sum(theta .^ 2)
+      ) / m;
+      
+  grad = (sum((sig(X * theta') - y) .* X) + lambda * theta) ./ m;
 
 end

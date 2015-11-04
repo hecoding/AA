@@ -46,7 +46,7 @@ else
 
     % Plot z = 0
     % Notice you need to specify the range [0, 0]
-    contour(u, v, z, [0, 0], 'LineWidth', 2)
+    contour(u, v, z, [0, 0], 'linecolor', 'blue') % no linewidth y linea azul
 end
 hold off
 

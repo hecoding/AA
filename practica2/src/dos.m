@@ -21,9 +21,7 @@ options = optimset('GradObj', 'on', 'MaxIter', 400);
 
 % Obtain the optimal theta
 lambda = 1;
-[theta, cst] = fminunc(@(t)(costRegulariz(t, X, y, lambda)), [0 0 0] , options);
-plotDecisionBoundary(theta, X, y);
+[theta, cst] = fminunc(@(t)(costRegulariz(t, X, y, lambda)), zeros(1, size(X, 2)), options);
+plotDecisionBoundary(theta', X, y);
 
-% falta costRegulariz
-% no se si ese vector de lambdas es corto o no
-% jugar con varias lambdas
+disp('Percentage of well classified examples:'); disp(percentage(theta, X, y));
