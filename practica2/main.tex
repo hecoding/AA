@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{pgffor}
+\graphicspath{ {images/} }
+
+\usepackage{listings}
+\lstdefinestyle{code}{
+language=Octave,
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+tabsize=4,
+numbers=left,
+numberstyle=\tiny,
+columns=fullflexible
+}
+\lstdefinestyle{snippet}{
+language=Octave,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+
+\addtolength{\textwidth}{1cm}
+
+\title{Práctica 1}
+\author{Héctor Laria Mantecón y Samuel Lapuente Jiménez}
+\date{5 de noviembre de 2015}
+
+\begin{document}
+
+\maketitle
+
+
+\pagebreak
+\begin{figure}
+\vspace*{-2cm}
+\foreach\x in {0,1,...,7}{
+	\begin{subfigure}{0.5\textwidth}
+	\hspace*{-0.65cm}
+	\includegraphics[width=0.38\textheight]{estudio\x}
+	%\caption{}
+	%\label{fig:recta}
+	\end{subfigure}
+}
+%\caption{blablabla}
+\end{figure}
+
+\end{document}
