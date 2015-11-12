@@ -1,3 +1,4 @@
+warning('off', 'Octave:possible-matlab-short-circuit-operator');
 % load examples on X and labels on y
 load('ex3data1.mat');
 
@@ -14,5 +15,5 @@ lambda = 0.1;
 thetas = oneVsAll(X, y, 10, lambda);
 
 [pred, label] = max(X * thetas', [], 2);
-disp('% Model hits:');
+disp('% of model hits:');
 disp(mean(double(label == y)) * 100);
