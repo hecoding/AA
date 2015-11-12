@@ -17,3 +17,4 @@ thetas = oneVsAll(X, y, 10, lambda);
 [pred, label] = max(X * thetas', [], 2);
 disp('% of model hits:');
 disp(mean(double(label == y)) * 100);
+% aplicar la función sigmoide y no dejar X * thetas' directamente
