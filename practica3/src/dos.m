@@ -10,3 +10,5 @@ pred = forwardProp(Theta1, Theta2, X, 10);
 [temp, label] = max(pred, [], 2);
 disp('% of model hits:');
 disp(mean(double(label == y)) * 100);
+% hacer forwardProp genérica para el número de nodos. de capas con 1 interna está bien
+% pasarle el número de nodos o algo
