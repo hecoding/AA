@@ -1,4 +1,5 @@
 function h = forwardProp(Theta1, Theta2, X, label_num)
+% It is generic on the number of nodes but only has one hidden layer
   pred = zeros(label_num, 1);
   
   a1 = [ones(size( X,1),1) X];                 %Xix401
