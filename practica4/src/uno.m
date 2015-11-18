@@ -10,4 +10,5 @@ num_ocultas = 25;
 num_etiquetas = 10;
 lambda = 1;
 
-costNN(params_rn, num_entradas, num_ocultas, num_etiquetas , X, y, lambda);
+%costNN(params_rn, num_entradas, num_ocultas, num_etiquetas , X, y, lambda);
+checkNNGradients(0);
