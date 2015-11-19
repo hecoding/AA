@@ -17,7 +17,7 @@ function [J grad] = costNN(params_rn, num_entradas, num_ocultas, num_etiquetas ,
   h  = sig(z3);
   
   % cost computation
-  labels = y == [1:10];
+  labels = y == [1:num_etiquetas];
   
   J = (
         sum(-sum( labels' * log(h) + (1 - labels') * log(1 - h) )) % cost
