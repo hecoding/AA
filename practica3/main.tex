@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{pgffor}
+\graphicspath{ {images/} }
+
+\usepackage{listings}
+\lstdefinestyle{code}{
+language=Octave,
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+tabsize=4,
+numbers=left,
+numberstyle=\tiny,
+columns=fullflexible
+}
+\lstdefinestyle{snippet}{
+language=Octave,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+
+\addtolength{\textwidth}{1cm}
+\addtolength{\textheight}{0.75cm}
+
+\title{Práctica 3}
+\author{Héctor Laria Mantecón y Samuel Lapuente Jiménez}
+\date{19 de noviembre de 2015}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+Mediante el uso de regresión logística multi-clase además de redes neuronales, en esta práctica conseguimos decidir qué número escrito a mano está representado en la imagen de entrada.
+
+\section{Regresión logística multi-clase}
+Realizamos un entrenamiento por clase, es decir, construimos un modelo regresivo por cada clase que haya en los ejemplos dados utilizando la salida correcta para cada clase.
+
+\subsection{Vectorización de la regresión logística}
+Para un cálculo eficiente de la regresión, se computa el coste y el gradiente vectorialmente de la siguiente forma:
+\lstinputlisting[style=code]{src/lrCostFunction.m}
+
+\pagebreak
+Cuya función se usa en el siguiente código para entrenar un clasificador por cada clase:
+\lstinputlisting[style=code]{src/oneVsAll.m}
+
+Finalmente el programa principal que utilizamos en este apartado es:
+\lstinputlisting[style=code]{src/uno.m}
+El cual nos da una salida:
+\begin{lstlisting}
+% of model hits:
+ 94.880
+\end{lstlisting}
+
+
+\section{Redes Neuronales}
+En esta parte de la práctica, valiéndonos de una red neuronal ya entrenada, realizamos solamente la propagación hacia delante para obtener el valor de la hipótesis.
+La cual está implementada de este modo:
+\lstinputlisting[style=code]{src/forwardProp.m}
+
+Y hacemos uso de ella de esta manera
+\lstinputlisting[style=code]{src/dos.m}
+para conseguir una salida:
+\begin{lstlisting}
+% of model hits:
+ 97.520
+\end{lstlisting}
+
+\section{Conclusión}
+Viendo las salidas de los dos scripts principales, podemos afirmar que la red neuronal es notablemente más eficaz en comparación con los modelos individuales de la regresión multi-clase.
+
+\end{document}
