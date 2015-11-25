@@ -1,8 +1,8 @@
 load('ex4data1.mat');
 
 load('ex4weights.mat');
-% Theta1 es de dimensión 25 x 401
-% Theta2 es de dimensión 10 x 26
+% Theta1 es de dimension 25 x 401
+% Theta2 es de dimension 10 x 26
 
 params_rn = [Theta1(:) ; Theta2(:)];
 num_entradas = 400;

@@ -20,7 +20,7 @@ function [J grad] = costNN(params_rn, num_entradas, num_ocultas, num_etiquetas ,
   labels = y == [1:num_etiquetas];
   
   J = (
-        sum(-sum( labels' * log(h) + (1 - labels') * log(1 - h) )) % cost
+        sum(-sum( labels .* log(h) + (1 - labels) .* log(1 - h) )) % cost
         +
         ( sum(sumsq(Theta1, 2)) + sum(sumsq(Theta2, 2)) ) * lambda / 2 % regularization
       ) / m;
