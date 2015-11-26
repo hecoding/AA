@@ -1,0 +1,117 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{pgffor}
+\graphicspath{ {images/} }
+
+\usepackage{listings}
+\lstdefinestyle{code}{
+language=Octave,
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+tabsize=4,
+numbers=left,
+numberstyle=\tiny,
+columns=fullflexible
+}
+\lstdefinestyle{snippet}{
+language=Octave,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+\lstdefinestyle{output}{
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+
+\addtolength{\textwidth}{1cm}
+\addtolength{\textheight}{0.75cm}
+
+\title{Práctica 4}
+\author{Héctor Laria Mantecón y Samuel Lapuente Jiménez}
+\date{26 de noviembre de 2015}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+El objetivo de esta práctica consiste en entrenar una red neuronal para dar una respuesta a la entrada de una imagen de un número escrito a mano.
+
+\section{Función de coste y cálculo del gradiente}
+Calculamos el coste regularizado y el gradiente en la siguiente función.
+\lstinputlisting[style=code]{src/costNN.m}
+
+\section{Funciones auxiliares}
+Implementamos la función para calcular la derivada de la función sigmoide como indica el guión de la práctica.
+\lstinputlisting[style=code]{src/sigDeriv.m}
+Además de {\tt pesosAleatorios} también mencionada.
+\lstinputlisting[style=code]{src/randWeights.m}
+
+\pagebreak
+\section{Chequeo del gradiente}
+Usando la función {\tt checkNNGradients}, que hace uso de {\tt computeNumericalGradients} junto con nuestra función de coste, comprobamos que la implementación del gradiente es correcta tal como muestra la salida:
+\begin{lstlisting}[style=output]
+(...)
+The above two columns you get should be very similar.
+(Left-Your Numerical Gradient, Right-Analytical Gradient)
+
+If your backpropagation implementation is correct, then
+the relative difference will be small (less than 1e-9).
+
+Relative Difference: 2.37276e-11
+\end{lstlisting}
+
+\section{Aprendizaje de los parámetros}
+En la sección Función de coste la función {\tt costNN} incluye el término de regularización de la red neuronal.
+Una vez hecho esto, usamos la función dada {\tt fmincg} para entrenar a la red neuronal con el siguiente script.
+\lstinputlisting[style=code]{src/uno.m}
+
+La salida para $\lambda = 1$ con $50$ iteraciones es:
+\begin{lstlisting}[style=snippet]
+Iteration    50 | Cost: 4.132290e-01
+% of hits:
+ 95.220
+\end{lstlisting}
+
+La salida para $\lambda = 0.5$ con $50$ iteraciones es:
+\begin{lstlisting}[style=snippet]
+Iteration    50 | Cost: 4.339710e-01
+% of hits:
+ 95.240
+\end{lstlisting}
+
+La salida para $\lambda = 0.3$ con $50$ iteraciones es:
+\begin{lstlisting}[style=snippet]
+Iteration    50 | Cost: 3.866537e-01
+% of hits:
+ 95.580
+\end{lstlisting}
+
+La salida para $\lambda = 1$ con $30$ iteraciones es:
+\begin{lstlisting}[style=snippet]
+Iteration    30 | Cost: 6.278349e-01
+% of hits:
+ 92.320
+\end{lstlisting}
+
+La salida para $\lambda = 0.5$ con $70$ iteraciones es:
+\begin{lstlisting}[style=snippet]
+Iteration    70 | Cost: 3.170915e-01
+% of hits:
+ 97.820
+\end{lstlisting}
+
+\section{Conclusión}
+Como hemos podido comprobar, el entrenamiento de las redes neuronales es un proceso complejo en el que debemos ajustar bien todos los parámetros, desde el número de nodos hasta el coeficiente de regularización, para obtener los mejores resultados ya que hasta la inicialización aleatoria influye.
+
+Lo que nos da a cambio es un gran porcentaje de aciertos, muchos más que cualquier método visto hasta ahora en el curso.
+
+\end{document}
