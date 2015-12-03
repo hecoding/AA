@@ -6,6 +6,10 @@
 \usepackage{pgffor}
 \graphicspath{ {images/} }
 
+\usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
+
 \usepackage{listings}
 \lstdefinestyle{code}{
 language=Octave,
@@ -16,7 +20,11 @@ basicstyle=\small\ttfamily,
 tabsize=4,
 numbers=left,
 numberstyle=\tiny,
-columns=fullflexible
+columns=fullflexible,
+backgroundcolor=\color{white},
+commentstyle=\color{mygreen},  % comment style
+keywordstyle=\color{blue},     % keyword style
+stringstyle=\color{amber},     % string literal style
 }
 \lstdefinestyle{snippet}{
 language=Octave,
