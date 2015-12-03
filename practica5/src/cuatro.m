@@ -27,21 +27,15 @@ Xtest_norm = bsxfun(@minus, Xtest_norm, mu);
 Xtest_norm = bsxfun(@rdivide, Xtest_norm, sigma);
 Xtest_norm = [ones(size(Xtest_norm, 1),1) Xtest_norm];
 
-% train for al the lambdas
+% train for al the lambdas and compute cv set costs
 for j = 1:length(lambda_vec)
   lambda = lambda_vec(j);
-  for i = 1:m
-    xset = X_norm(1:i,:);
-    yset = y(1:i);
-    
-    costFunction = @(temp_theta) linRCost(xset, yset, temp_theta, lambda);
-    current_theta = fmincg(costFunction, theta, options);
-    
-    err_s = linRCost(xset, yset, current_theta, lambda);
-    err_v = linRCost(Xval_norm, yval, current_theta, lambda);
-  end
-  error_set(j) = err_s;
-  error_val(j) = err_v;
+ 
+  costFunction = @(temp_theta) linRCost(X_norm, y, temp_theta, lambda);
+  current_theta = fmincg(costFunction, theta, options);
+  
+  error_set(j) = linRCost(X_norm, y, current_theta, lambda);
+  error_val(j) = linRCost(Xval_norm, yval, current_theta, lambda);
 end
 
 figure;
@@ -54,21 +48,15 @@ legend('training', 'cross validation');
 legend('boxoff');
 hold off;
 
-%
+% train for al the lambdas and compute test set costs
 for j = 1:length(lambda_vec)
   lambda = lambda_vec(j);
-  for i = 1:m
-    xset = X_norm(1:i,:);
-    yset = y(1:i);
-    
-    costFunction = @(temp_theta) linRCost(xset, yset, temp_theta, lambda);
-    current_theta = fmincg(costFunction, theta, options);
-    
-    err_s = linRCost(xset, yset, current_theta, lambda);
-    err_v = linRCost(Xtest_norm, ytest, current_theta, lambda);
-  end
-  error_set(j) = err_s;
-  error_val(j) = err_v;
+ 
+  costFunction = @(temp_theta) linRCost(X_norm, y, temp_theta, lambda);
+  current_theta = fmincg(costFunction, theta, options);
+  
+  error_set(j) = linRCost(X_norm, y, current_theta, lambda);
+  error_val(j) = linRCost(Xtest_norm, ytest, current_theta, lambda);
 end
 
 figure;
