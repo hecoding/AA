@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{pgffor}
+\graphicspath{ {images/} }
+
+\usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
+
+\usepackage{listings}
+\lstdefinestyle{code}{
+language=Octave,
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+tabsize=4,
+numbers=left,
+numberstyle=\tiny,
+columns=fullflexible,
+backgroundcolor=\color{white},
+commentstyle=\color{mygreen},  % comment style
+keywordstyle=\color{blue},     % keyword style
+stringstyle=\color{amber},     % string literal style
+}
+\lstdefinestyle{snippet}{
+language=Octave,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+\lstdefinestyle{output}{
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+
+\addtolength{\textwidth}{1cm}
+\addtolength{\textheight}{0.75cm}
+\setcounter{section}{-1}
+
+\title{Práctica 5}
+\author{Héctor Laria Mantecón y Samuel Lapuente Jiménez}
+\date{3 de diciembre de 2015}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+
+\section{Elección de los parámetros $C$ y $\sigma$}
+Aquí (figura decimal normal) vemos las diferentes combinaciones de $C$s y $\sigma$s, junto al tiempo que ha llevado computa el entrenamiento del modelo con dichos parámetros (cuanto el color sea más caliente y el punto más pequeño, más tiempo).
+Cambiamos los ejes $x$ e $y$ a escala logarítmica (figura log normal) ya que las entradas también obedecen esta distribución.
+Como podemos ver en (figura desde arriba), hay un pico de tiempo de cómputo conforme nos acercamos a $C = 10$ y $\sigma = 0.1$ en el que sin embargo no nos da un buen óptimo (figura derecha) ni mucho menos.
+
+(meter todas las figuras aquí)
+
+\section{Conclusión}
+
+
+\end{document}

@@ -23,6 +23,8 @@ end
 scatter3(vars(:,1), vars(:,2), percentages,...
          1.2*(max(elapsed_time) - elapsed_time), elapsed_time, '.');
 box on;
+set(gca, 'xscale', 'log');
+set(gca, 'yscale', 'log');
 xlabel('C');
 ylabel('\sigma');
 zlabel('% of hits');
