@@ -54,11 +54,15 @@ basicstyle=\small\ttfamily,
 \section{Introducción}
 
 \section{Elección de los parámetros $C$ y $\sigma$}
-Aquí (figura decimal normal) vemos las diferentes combinaciones de $C$s y $\sigma$s, junto al tiempo que ha llevado computa el entrenamiento del modelo con dichos parámetros (cuanto el color sea más caliente y el punto más pequeño, más tiempo).
+En la (figura decimal normal) vemos las diferentes combinaciones de $C$s y $\sigma$s, junto al tiempo que ha llevado computa el entrenamiento del modelo con dichos parámetros (cuanto el color sea más caliente y el punto más pequeño, más tiempo).
 Cambiamos los ejes $x$ e $y$ a escala logarítmica (figura log normal) ya que las entradas también obedecen esta distribución.
 Como podemos ver en (figura desde arriba), hay un pico de tiempo de cómputo conforme nos acercamos a $C = 10$ y $\sigma = 0.1$ en el que sin embargo no nos da un buen óptimo (figura derecha) ni mucho menos.
 
 (meter todas las figuras aquí)
+
+\section{Detección de spam}
+El número de acierto más alto en el conjunto de datos de validación ha sido de $86.667\%$, con $C = 3$ y $\sigma = 10$.
+En el conjunto de datos de test podemos ver que ha clasificado bien un $83.03\%$ de los emails que eran spam.
 
 \section{Conclusión}
 
