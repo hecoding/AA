@@ -47,6 +47,7 @@ for i = 1:size(vars, 1)
 end
 
 %   size and color are relative. bigger (or colder) means less time to compute
+figure;
 scatter3(vars(:,1), vars(:,2), percentages,...
          0.45*(max(elapsed_time) - elapsed_time), elapsed_time, '.');
 box on;
@@ -63,5 +64,39 @@ sigma = vars(bestModelIndex, 2);
 model = svmTrain(trainSet', ytrainSet', C, @(x1, x2) gaussianKernel(x1, x2, sigma));
 
 pred = svmPredict(model, testSet');
-disp('The selected model made a % of hits of:');
-disp(mean(double(pred == ytestSet')) * 100)
+disp('The best model (with gaussian kernel) made a % of hits of:');
+disp(mean(double(pred == ytestSet')) * 100);
+
+% now let's try with a linear kernel
+%   vector with the percentage of hits of each model
+percentages_linear = zeros(length(nums), 1);
+elapsed_time_linear = zeros(length(nums), 1);
+best_linear_percentage = 0;
+
+for i = 1:length(nums)
+  C = nums(i);
+  
+  tic();
+  model = svmTrain(trainSet', ytrainSet', C, @(x1, x2) linearKernel(x1, x2));
+  elapsed_time_linear(i) = toc();
+  
+  pred = svmPredict(model, validationSet');
+  percentages_linear(i) = mean(double(pred == yvalidationSet')) * 100;
+  
+  if(percentages_linear(i) > best_linear_percentage)
+    best_linear_model = model;
+    best_linear_percentage = percentages_linear(i);
+  end
+end
+
+figure;
+plot(nums, percentages_linear);
+%scatter(nums, percentages_linear, 0.3*(max(elapsed_time_linear) - elapsed_time_linear), elapsed_time_linear, 'filled');
+set(gca, 'xscale', 'log');
+xlabel('C');
+ylabel('% of hits');
+
+% test with the most succesful model
+pred = svmPredict(best_linear_model, testSet');
+disp('The best model (with linear kernel) made a % of hits of:');
+disp(mean(double(pred == ytestSet')) * 100);

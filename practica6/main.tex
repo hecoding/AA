@@ -43,9 +43,9 @@ basicstyle=\small\ttfamily,
 \addtolength{\textheight}{0.75cm}
 \setcounter{section}{-1}
 
-\title{Práctica 5}
+\title{Práctica 6}
 \author{Héctor Laria Mantecón y Samuel Lapuente Jiménez}
-\date{3 de diciembre de 2015}
+\date{17 de diciembre de 2015}
 
 \begin{document}
 
@@ -61,10 +61,19 @@ Como podemos ver en (figura desde arriba), hay un pico de tiempo de cómputo con
 (meter todas las figuras aquí)
 
 \section{Detección de spam}
+Vamos a hacer 3 subconjuntos dentro del total de los mails (sumando {\tt easy_ham}, {\tt hard_ham} y {\tt spam}). El de entrenamiento, que tendrá el 60\% de todos los mails, el de validación, que tendrá el 20\% y el de testing, que tendrá el 20\% restante. Gracias a esto podremos probar los modelos entrenados y los resultados que nos darán no estarán condicionados por haber sido entrenados con los mismo datos.
+bla bla
+\subsection{Kernel gaussiano}
 El número de acierto más alto en el conjunto de datos de validación ha sido de $86.667\%$, con $C = 3$ y $\sigma = 10$.
 En el conjunto de datos de test podemos ver que ha clasificado bien un $83.03\%$ de los emails que eran spam.
 
+\subsection{Kernel lineal}
+El número de acierto más alto en el conjunto de datos de validación ha sido de $95.303\%$, con $C = 0.3$.
+En el conjunto de datos de test podemos ver que ha clasificado bien un $96.818\%$.
+
 \section{Conclusión}
+blabla
+Cuando tenemos ejemplos con una gran cantidad de atributos, es mejor utilizar un kernel lineal en términos de rapidez de entrenamiento y de porcentaje acertado.
 
 
 \end{document}
