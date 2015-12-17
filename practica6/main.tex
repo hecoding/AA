@@ -3,7 +3,6 @@
 \usepackage[spanish]{babel}
 \usepackage{subcaption}
 \usepackage{graphicx}
-\usepackage{pgffor}
 \graphicspath{ {images/} }
 
 \usepackage{color}
@@ -52,27 +51,138 @@ basicstyle=\small\ttfamily,
 \maketitle
 
 \section{Introducción}
+El objetivo de esta práctica consiste en comprender como funcionan y se entrenan SVM y, mediante el uso de una, crear un clasificador de spam para correos electrónicos. Además de comprender la importancia de ajustar los parámetros de estas.
 
-\section{Elección de los parámetros $C$ y $\sigma$}
-En la (figura decimal normal) vemos las diferentes combinaciones de $C$s y $\sigma$s, junto al tiempo que ha llevado computa el entrenamiento del modelo con dichos parámetros (cuanto el color sea más caliente y el punto más pequeño, más tiempo).
-Cambiamos los ejes $x$ e $y$ a escala logarítmica (figura log normal) ya que las entradas también obedecen esta distribución.
-Como podemos ver en (figura desde arriba), hay un pico de tiempo de cómputo conforme nos acercamos a $C = 10$ y $\sigma = 0.1$ en el que sin embargo no nos da un buen óptimo (figura derecha) ni mucho menos.
+\section{SVM}
 
-(meter todas las figuras aquí)
+\subsection{Kernel lineal}
+Usamos \texttt{svmTrain} con los parámetros dados de este modo:
+\lstinputlisting[style=code]{src/ex1_1.m}
+Las fronteras resultantes pueden verse en la figura \ref{fig:klineal}.
 
+\begin{figure}[h]
+
+\hspace{-0.5cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex1_1.1}}}
+\end{subfigure}
+%\hspace{-1cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex1_1.2}}}
+\end{subfigure}
+\caption{kernel lineal con $C = 1$ y a $100$, respectivamente} \label{fig:klineal} 
+
+\end{figure}
+
+\subsection{Kernel gaussiano}
+Primero, implementamos \texttt{gaussianKernel}:
+\lstinputlisting[style=code]{src/gaussianKernel.m}
+Que usamos con el siguiente código:
+\lstinputlisting[style=code]{src/ex1_2.m}
+
+No hemos podido pintar la gráfica porque la función dada en la práctica daba error.
+
+\subsection{Elección de los parámetros $C$ y $\sigma$}
+En este apartado generamos 64 modelos diferentes eligiendo valores para C y $\sigma$ entre los del conjunto formado por $[0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]$.
+Para todos estos modelos que generamos observamos con la función proporcionada svmPredict qué modelo es el que mejor se ajusta a los casos dados.
+\lstinputlisting[style=code]{src/ex1_3.m}
+
+En la figura \ref{fig:kgaussiano_log} (Cambiamos los ejes $x$ e $y$ a escala logarítmica ya que las entradas también obedecen esta distribución.) vemos las diferentes combinaciones de $C$s y $\sigma$s, junto al tiempo que ha llevado computar el entrenamiento del modelo con dichos parámetros (cuanto el color sea más caliente y el punto más pequeño, más tiempo).
+
+Como podemos ver en la figura \ref{fig:kgaussiano_arriba}, hay un pico de tiempo de cómputo conforme nos acercamos a $C = 10$ y $\sigma = 0.1$ en el que sin embargo no nos da un buen óptimo (figura \ref{fig:kgaussiano_lados}) ni mucho menos.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{{{ex1_3.log}}}
+\caption{Resultados de la SVM con kernel gaussiano} \label{fig:kgaussiano_log} 
+\end{figure}
+
+\begin{figure}
+\hspace{-0.5cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex1_3.log_l}}}
+\end{subfigure}
+%\hspace{-1cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex1_3.log_r}}}
+\end{subfigure}
+\caption{Resultados con kernel gaussiano. Lado izquierdo y derecho respect.} \label{fig:kgaussiano_lados} 
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{{{ex1_3.log_up}}}
+\caption{Resultados con kernel gaussiano. Desde arriba} \label{fig:kgaussiano_arriba} 
+\end{figure}
+
+\pagebreak
 \section{Detección de spam}
-Vamos a hacer 3 subconjuntos dentro del total de los mails (sumando {\tt easy_ham}, {\tt hard_ham} y {\tt spam}). El de entrenamiento, que tendrá el 60\% de todos los mails, el de validación, que tendrá el 20\% y el de testing, que tendrá el 20\% restante. Gracias a esto podremos probar los modelos entrenados y los resultados que nos darán no estarán condicionados por haber sido entrenados con los mismo datos.
-bla bla
+En esta sección vamos a entrenar a una svm para convertirla en un detector de spam. Para poder hacer esto antes tenemos que tratar el email y transformarlo en algo que nuestra svm entienda.
+
+Primero transformamos cada correo en un correo 'de solo texto', sin caracteres especiales. Una vez hecho esto, lo transformamos a un array de celdas de octave para que nuestra svm pueda tratarlo. Para ello tenemos un vector con nuestro vocabulario formado por 1899 palabras o componentes de un vector.
+
+Seguidamente hacemos 3 subconjuntos dentro del total de los emails (sumando \texttt{easy\_ham}, \texttt{hard\_ham} y \texttt{spam}); el de entrenamiento, que tendrá el 60\% de todos los mails, el de validación, que tendrá el 20\% y el de testing, que tendrá el 20\% restante.
+
+Gracias a esto podremos probar los modelos entrenados y los resultados que nos darán no estarán condicionados por haber sido entrenados con los mismo datos.
+Todo eso se aplica con el siguiente código:
+\lstinputlisting[style=code]{src/ex2.m}
+
+En el que hacemos uso de las siguientes funciones auxiliares propias:
+\lstinputlisting[style=code]{src/parseEmail.m}
+\lstinputlisting[style=code]{src/emailWords.m}
+\lstinputlisting[style=code]{src/splitDataSet.m}
+
 \subsection{Kernel gaussiano}
 El número de acierto más alto en el conjunto de datos de validación ha sido de $86.667\%$, con $C = 3$ y $\sigma = 10$.
 En el conjunto de datos de test podemos ver que ha clasificado bien un $83.03\%$ de los emails que eran spam.
 
+En las figuras \ref{fig:spam:kgaussiano}, \ref{fig:spam:kgaussiano_lados}, \ref{fig:spam:kgaussiano_arriba} se puede ver el rendimiento del entrenamiento y la prueba con diferentes parámetros.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{{{ex2}}}
+\caption{Resultados del kernel gaussiano. Escala logarítmica} \label{fig:spam:kgaussiano} 
+\end{figure}
+
+\begin{figure}
+\hspace{-0.5cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex2_l}}}
+\end{subfigure}
+%\hspace{-1cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex2_r}}}
+\end{subfigure}
+\caption{Resultados con kernel gaussiano. Lado izquierdo y derecho respect.} \label{fig:spam:kgaussiano_lados} 
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{{{ex2_up}}}
+\caption{Resultados del kernel gaussiano. Desde arriba} \label{fig:spam:kgaussiano_arriba} 
+\end{figure}
+\pagebreak
 \subsection{Kernel lineal}
 El número de acierto más alto en el conjunto de datos de validación ha sido de $95.303\%$, con $C = 0.3$.
 En el conjunto de datos de test podemos ver que ha clasificado bien un $96.818\%$.
 
+En la figura \ref{fig:spam:klineal} vemos el rendimiento de los modelos entrenados, y el tiempo tomado para entrenarlos.
+
+\begin{figure}[h]
+\hspace{-0.5cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex2.linearkernel}}}
+\end{subfigure}
+%\hspace{-1cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{ex2.linearkernel_2}}}
+\end{subfigure}
+\caption{Resultados de la SVM con kernel lineal} \label{fig:spam:klineal} 
+\end{figure}
+
 \section{Conclusión}
-blabla
+Al realizar la práctica nos hemos dado cuenta de la gran importancia de elegir bien los parámetros de las SVM, ya que como vemos en las gráficas, hay una diferencia muy considerable en el tiempo de cómputo y en la cantidad de ejemplos clasificados correctamente. Además esto nos sugiere generar una estrategia a seguir a la hora de elegir los parámetros más allá de probar para todos los casos ya que a veces puede resultar inviable.
+
 Cuando tenemos ejemplos con una gran cantidad de atributos, es mejor utilizar un kernel lineal en términos de rapidez de entrenamiento y de porcentaje acertado.
 
 
