@@ -1,0 +1,96 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
+
+\usepackage{listings}
+\lstdefinestyle{code}{
+language=Octave,
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+tabsize=4,
+numbers=left,
+numberstyle=\tiny,
+stepnumber=2,
+columns=fullflexible,
+backgroundcolor=\color{white},
+commentstyle=\color{mygreen},  % comment style
+keywordstyle=\color{blue},     % keyword style
+stringstyle=\color{amber},     % string literal style
+}
+\lstdefinestyle{snippet}{
+language=Octave,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+\lstdefinestyle{output}{
+frame=single,
+breakatwhitespace=true,
+breaklines=true,
+basicstyle=\small\ttfamily,
+}
+
+\addtolength{\textwidth}{1cm}
+\addtolength{\textheight}{0.75cm}
+\setcounter{section}{-1}
+
+\title{Práctica 7}
+\author{Héctor Laria Mantecón y Samuel Lapuente Jiménez}
+\date{14 de enero de 2016}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+En ésta práctica vamos a utilizar un algoritmo de clustering muy común en aprendizaje no supervisado llamado \textit{k-means}.
+
+El algoritmo \textit{k-means} agrupa un conjunto de ejemplos en $K$ clases o clusters mediante un proceso que comienza con una inicialización aleatoria del centroide de cada clase, para luego iterativamente asignar a cada ejemplo la clase del centroide más cercano y recomputar los centroides en base a esa asignación.
+
+\section{Implementación de k-means}
+Para poner en funcionamiento \textit{k-means} hemos implementado la función \texttt{findClosestCentroids} del siguiente modo:
+\lstinputlisting[style=code]{src/findClosestCentroids.m}
+Junto con \texttt{computeCentroids}:
+\lstinputlisting[style=code]{src/computeCentroids.m}
+
+\pagebreak
+Pudiendo dividir los puntos en clusters y pudiendo mover el centroide para que esté en el centro de su cluster, llamamos al algoritmo ya completado así:
+\lstinputlisting[style=code]{src/ex1.m}
+Si usamos los centroides de prueba dados en el guión, tenemos la siguiente salida.
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{{{1}}}
+\end{figure}
+
+\pagebreak
+\section{Compresión de imágenes}
+Ahora en vez de puntos en el plano tenemos colores con 3 componentes. El algoritmo sigue funcionando así que vamos a reducir los colores de la imagen cambiando los \textit{K} clusters a 16. El código es el siguiente.
+\lstinputlisting[style=code]{src/ex2.m}
+
+La imagen final se ve así. A la izquierda el original, a la derecha con sólo 16 colores.
+\begin{figure}[h]
+\hspace{-0.5cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{2.1}}}
+\end{subfigure}
+%\hspace{-1cm}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=\linewidth]{{{2.2}}}
+\end{subfigure}
+\end{figure}
+
+\section{Conclusión}
+El algoritmo \textit{k-means} nos ha sorprendido gratamente debido a su sencillez pero a la vez gran efectividad para clusterizar datos. Hemos visto que sabiendo el \textit{K} número de clusters que queremos sacar, sólo necesitamos lanzarlo un número de veces específico (p. ej $100$) para que nos dé los mejores agrupamientos.
+
+También cabe señalar que no sería difícil implementar un método para no tener que dar el número de iteraciones del algoritmo, con mirar que ningún punto cambie de una iteración a otra sabríamos que \textit{k-means} ha terminado.
+
+\end{document}
