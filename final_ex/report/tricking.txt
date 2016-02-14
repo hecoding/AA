@@ -1,0 +1,50 @@
+>> black = zeros(1, size(Xtrain, 1));
+>> whatIs(black, 1)
+1.66774% left
+0.726512% right
+0.198064% straight
+0.147015% up
+
+it's left with 1.66774%
+
+-------
+
+>> white = ones(1, size(Xtrain, 1));
+>> whatIs(white, 1)
+0.000121845% left
+21.3542% right
+0.0197489% straight
+99.3715% up
+
+it's up with 99.3715%
+
+------
+
+% attributes = {'left', 'right', 'straight', 'up'};
+
+>> delta = backPropagation(black, [0 1 0 0]);
+>> imshow(reshape(delta,60,64) * 300)
+
+>> imshow(reshape(backPropagation(black, [1 0 0 0]),60,64))
+
+>> imshow(reshape(backPropagation(black, [0 1 0 0]),60,64))
+
+------
+
+>> whatIs(Xtest(:,1)',1)
+0.0104844% left
+86.5416% right
+2.72964e-05% straight
+75.9797% up
+
+it's right with 86.5416%
+
+>> delta = backPropagation(black, [0 1 0 0]);
+
+>> whatIs(Xtest(:,1)' - delta * 9.8 ,1)
+0.00288016% left
+84.1261% right
+0.000111166% straight
+84.1638% up
+
+it's up with 84.1638%

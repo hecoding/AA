@@ -1,0 +1,458 @@
+\documentclass[titlepage]{article}
+\usepackage{multicol}
+\setlength{\columnsep}{0.6cm}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,       % color of internal links (change box color with linkbordercolor)
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=blue           % color of external links
+}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
+
+\usepackage{listings}
+\lstdefinestyle{code}{
+	language=Octave,
+	frame=single,
+	breakatwhitespace=true,
+	breaklines=true,
+	basicstyle=\small\ttfamily,
+	tabsize=4,
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=2,
+	columns=fullflexible,
+	backgroundcolor=\color{white},
+	commentstyle=\color{mygreen},  % comment style
+	keywordstyle=\color{blue},     % keyword style
+	stringstyle=\color{amber},     % string literal style
+	showstringspaces=false,
+}
+\lstdefinestyle{snippet}{
+	language=Octave,
+	breakatwhitespace=true,
+	breaklines=true,
+	basicstyle=\small\ttfamily,
+}
+\lstdefinestyle{output}{
+	frame=single,
+	breakatwhitespace=true,
+	breaklines=true,
+	basicstyle=\small\ttfamily,
+}
+
+\newenvironment{Figure} %para que se puedan meter imágenes en la columnas
+  {\par\medskip\noindent\minipage{\linewidth}}
+  {\endminipage\par\medskip}
+
+
+\title{Aprendizaje Automático \\ Proyecto de la asignatura}
+\author{Héctor Laria Mantecón}
+\date{14 de febrero de 2016}
+
+\begin{document}
+
+\maketitle
+
+\begin{multicols*}{2}
+[
+\section*{\centering Introducción}
+En este proyecto vamos a desarrollar varios sistemas de aprendizaje automático entrenados sobre el conjunto de datos escogido\footnote{\href{https://archive.ics.uci.edu/ml/datasets/CMU+Face+Images}{CMU Face Images Data Set}}. El objetivo de esto es comparar las distintas técnicas aprendidas en clase, dando mediciones y representaciones que nos permiten comparar dichas técnicas y sacar conclusiones sobre ellas.
+]
+
+\section{Explicación del dataset}
+Los datos consisten en $640$ imágenes en blanco y negro de caras, tomadas con distinta \textbf{pose} (\textit{frente, izquierda, derecha, para arriba}), \textbf{expresión} (\textit{neutral, contento, triste, enfadado}) y \textbf{accesorios} (\textit{con gafas de sol, sin gafas de sol}). Las fotos vienen en tamaño normal, mediano  y pequeño.
+\begin{Figure}
+\centering
+\includegraphics[width=0.49\linewidth]{{{ex1}}}
+\includegraphics[width=0.49\linewidth]{{{ex2}}}
+\includegraphics[width=0.49\linewidth]{{{ex3}}}
+\includegraphics[width=0.49\linewidth]{{{ex4}}}
+\end{Figure}
+
+Cada imagen tiene una combinación de estos atributos, y hay 32 imágenes por cada persona. Sin embargo $16$ de las $640$ imágenes tuvieron errores al ser tomadas y no se han incluido en el conjunto.
+
+\section{División de los datos}
+Antes de nada vamos a dividir nuestros ejemplos de entrenamiento en 3 subconjuntos, \textit{entrenamiento}, \textit{validación} y \textit{test}. Cada uno tendrá un $60$, $20$ y $20\%$ de los datos de entrenamiento respectivamente.
+
+Además es buena idea que estos estén \textbf{estratificados} y así cada uno tenga un poco de todo. Para ello en vez de juntar todo y dividir, vamos a hacer la división en cada clase y asignar cada subdivisión a un subconjunto de entrenamiento de los tres dichos.
+
+Es una buena técnica separar de esta forma los datos para que los modelos entrenados no estén condicionados por haber visto unos ciertos ejemplos con anterioridad y así la predicción final no resulte afectada.
+De esta manera, entrenaremos con el conjunto de \textit{entrenamiento} las variaciones de modelos que necesitemos considerar, probaremos estos modelos con el conjunto de \textit{validación}, y la predicción definitiva la haremos con el conjunto de \textit{test}.
+
+\subsection{Tratamiento de los datos} \label{sec:tratamiento}
+Sabemos que cada ejemplo es una imagen en escala de grises, es decir, un vector de números entre $0$ y $127$. Lo que haremos será dividirlo entre $127$ para reducir el rango entre $0$ y $1$. Después haremos \textit{normalización} para conseguir media $0$. No hace falta \textit{escalado} de atributos porque no hay grandes rangos entre ellos.
+
+\section{Regresión logística}
+Empezamos el entrenamiento con el método de regresión logística. No nos vamos a preocupar del grado del polinomio porque es suficientemente grande (exactamente una incógnita por píxel) y vamos a tratar el sobreajuste con el parámetro $\lambda$ de regularización. Así si por algún casual la regresión estuviera sesgada notaríamos el error en la curva de aprendizaje de $\lambda$.
+
+Al comprobar primeramente su comportamiento sin hacer ningún ajuste podemos ver en la figura \ref{graf:log:ejemplos1} que no tiene el aspecto similar a las gráficas de este tipo, así que con la curva de aprendizaje de $\lambda$ vamos a tratar de arreglar esto.
+\begin{Figure}
+\includegraphics[width=\linewidth]{{{log_m_l=0}}}
+\captionof{figure}{Error cuando los ejemplos aumentan}
+\label{graf:log:ejemplos1}
+\end{Figure}
+
+La curva que vemos en la figura \ref{graf:log:lambdas} es peculiar y nos hace pensar que no es el mejor método para usar con estos datos, porque a partir de cierto punto siempre hay el mismo error y no se sesga nunca. Aún así vamos a coger la primera lambda con menor error para probarlo.
+\begin{Figure}
+\includegraphics[width=\linewidth]{{{log_lambdas}}}
+\captionof{figure}{Error con respecto a la sucesión de lambdas}
+\label{graf:log:lambdas}
+\end{Figure}
+
+La curva en la figura \ref{graf:log:ejemplos2} que resulta del entrenamiento con el parámetro escogido ($\lambda = 10000000$) sigue siendo igual de rara y podemos interpretar que está sesgada.
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{log_m_l=10000000}}}
+\captionof{figure}{Error vs nº de ejemplos. Nada común}
+\label{graf:log:ejemplos2}
+\end{Figure}
+
+Al final, a sugerencia del profesor, escogeremos el parámetro de regularización que tenga más éxito en clasificar el conjunto de validación como prueba final (figura \ref{graf:log:porcentaje}).
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{log_percentages_l=100}}}
+\captionof{figure}{Ejemplos clasificados correctamente conforme avanza $\lambda$}
+\label{graf:log:porcentaje}
+\end{Figure}
+
+Los resultados finales para cada clase y en general en el conjunto de \textit{test} son:
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ \textbf{Clase} & \textbf{Aciertos} (\%) \\
+ \hline \hline
+ izquierda & 93.75 \\
+ derecha & 74.19 \\
+ frente & 54.84 \\
+ arriba & 70.97 \\
+ \hline
+ \textbf{TOTAL} & \textbf{73.6} \\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ Precisión & 0.736 \\
+ Recall & 0.736 \\
+ Average & 0.736 \\
+ $F_1$ score & 0.736 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\section{Redes neuronales}
+reg log pero permite expresar más complejo. arquitectura similar a la clasificación de números
+En las redes neuronales una vez elegida una arquitectura no demasiado desproporcionada para la tarea que tenemos que hacer, sólo nos tenemos que preocupar del parámetro $\lambda$ de regularización para ajustar nuestra red y controlar el sesgo o la varianza.
+
+Para entrenar la red neuronal nos ayudamos de las \textit{curvas de aprendizaje} para ver cómo se comporta el modelo sin regularización. En la figura \ref{graf:nn:ejemplos1} vemos que el error no es muy alto (tendríamos \textit{sesgo}) pero sí hay un gran espacio entre las líneas de los ejemplos de entrenamiento y validación, lo que indica algo de \textit{varianza}. Con la gráfica de la figura \ref{graf:nn:lambdas} encontramos la mejor regularización, y ya podemos comprobar en la figura \ref{graf:nn:ejemplos2} que la diferencia de error se reduce.
+
+Con el modelo convenientemente ajustado obtenemos los siguientes resultados:
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ \textbf{Clase} & \textbf{Aciertos} (\%) \\
+ \hline \hline
+ izquierda & 93.75 \\
+ derecha & 74.19 \\
+ frente & 74.19 \\
+ arriba & 74.19 \\
+ \hline
+ \textbf{TOTAL} & \textbf{79.2} \\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ Precisión & 0.728 \\
+ Recall & 0.728 \\
+ Average & 0.728 \\
+ $F_1$ score & 0.728 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{nn_m_l=0}}}
+\captionof{figure}{Error cuando los ejemplos aumentan}
+\label{graf:nn:ejemplos1}
+\end{Figure}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{nn_lambdas}}}
+\captionof{figure}{Error con respecto a la sucesión de lambdas}
+\label{graf:nn:lambdas}
+\end{Figure}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{nn_m_l=0.3}}}
+\captionof{figure}{Error vs nº ejemplos con regularización}
+\label{graf:nn:ejemplos2}
+\end{Figure}
+
+---------
+
+One obvious advantage of artificial neural networks over support vector machines is that artificial neural networks may have any number of outputs, while support vector machines have only one. The most direct way to create an n-ary classifier with support vector machines is to create n support vector machines and train each of them one by one. On the other hand, an n-ary classifier with neural networks can be trained in one go. Additionally, the neural network will make more sense because it is one whole, whereas the support vector machines are isolated systems. This is especially useful if the outputs are inter-related.
+
+\section{Support Vector Machines}
+Para entrenar las SVMs seguiremos el método utilizado en las prácticas; entrenar con diferentes valores para los parámetros y escoger el que más aciertos tenga (en el conjunto de validación). También haremos uso de diferentes \textit{kernels}.
+
+\subsection{Kernel lineal}
+Probando diferentes parámetros $C$ de regularización (figura \ref{graf:svm:lin}), escogemos $10$ como el que da mejor resultado.
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ \textbf{Clase} & \textbf{Aciertos} (\%) \\
+ \hline \hline
+ izquierda & 91.2 \\
+ derecha & 83.2 \\
+ frente & 68 \\
+ arriba & 68 \\
+ \hline
+ \textbf{TOTAL} & \textbf{77.6} \\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ Precisión & 0.957 \\
+ Recall & 0.686 \\
+ Average & 0.822 \\
+ $F_1$ score & 0.8 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{svm_lin}}}
+\captionof{figure}{Cuanto más cálido es el color del punto más tiempo ha tardado en entrenar}
+\label{graf:svm:lin}
+\end{Figure}
+
+\subsection{Kernel gaussiano}
+\hyperref[sec:tratamiento]{Como ya hemos dicho antes}, para nuestros datos no ha sido necesario pero es \textbf{muy} aconsejable \textit{escalar atributos} antes de usar el \textit{kernel gaussiano} ya que atributos muy grandes se pueden superponer encima de los pequeños.
+
+En esta ocasión, a parte del parámetro $C$ también tenemos que ajustar el parámetro $\sigma$ propio del kernel, así que hacemos combinaciones de ambos y escogemos el que mejor se comporte. En la figura \ref{graf:svm:gauss:normal} hemos podido representarlo en 3D. Las figuras \ref{graf:svm:gauss:r} y \ref{graf:svm:gauss:l} son vistas a derecha e izquierda para mejor apreciación, y en la figura \ref{graf:svm:gauss:up} se muestra mejor el tiempo que se ha tardado en entrenar el modelo en concreto.
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{svm_gauss_normal}}}
+\captionof{figure}{Cuanto más grande es el punto más tiempo tarda en entrenar. El color va en relación al tamaño, cuanto maś grande más cálido}
+\label{graf:svm:gauss:normal}
+\end{Figure}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{svm_gauss_r}}}
+\captionof{figure}{}
+\label{graf:svm:gauss:r}
+\end{Figure}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{svm_gauss_l}}}
+\captionof{figure}{}
+\label{graf:svm:gauss:l}
+\end{Figure}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{svm_gauss_up}}}
+\captionof{figure}{Tiempo que tarda en entrenar para cada $C$ y $\sigma$}
+\label{graf:svm:gauss:up}
+\end{Figure}
+
+Los mejores parámetros son $C = 0.01$ y $\sigma = 3$ y los resultados obtenidos con ellos son los siguientes:
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ \textbf{Clase} & \textbf{Aciertos} (\%) \\
+ \hline \hline
+ izquierda & 92 \\
+ derecha & 80.8 \\
+ frente & 82.4 \\
+ arriba & 82.4 \\
+ \hline
+ \textbf{TOTAL} & \textbf{84.4} \\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ Precisión & 0.844 \\
+ Recall & 0.844 \\
+ Average & 0.844 \\
+ $F_1$ score & 0.844 \\
+ \hline
+\end{tabular}
+\end{center}
+
+------------
+
+On the other hand, an n-ary classifier with neural networks can be trained in one go. Additionally, the neural network will make more sense because it is one whole, whereas the support vector machines are isolated systems. This is especially useful if the outputs are inter-related.
+
+For example, if the goal was to classify hand-written digits, ten support vector machines would do. Each support vector machine would recognize exactly one digit, and fail to recognize all others. Since each handwritten digit cannot be meant to hold more information than just its class, it makes no sense to try to solve this with an artificial neural network.
+
+\section{Reducción de dimensiones}
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{dim_2d}}}
+\captionof{figure}{}
+\label{graf:dim_red:}
+\end{Figure}
+
+\begin{Figure}
+%\centering
+\includegraphics[width=0.48\linewidth]{{{dim_original}}}
+\includegraphics[width=0.48\linewidth]{{{dim_red}}}
+\captionof{figure}{}
+\label{graf:dim_red:}
+\end{Figure}
+
+\section{Engañando a la red neuronal}
+\begin{Figure}
+%\centering
+\includegraphics[width=0.48\linewidth]{{{trick_black}}}
+\includegraphics[width=0.48\linewidth]{{{trick_white}}}
+\captionof{figure}{}
+\label{graf:dim_red:}
+\end{Figure}
+
+\begin{Figure}
+%\centering
+\includegraphics[width=0.48\linewidth]{{{trick_delta_r}}}
+\includegraphics[width=0.48\linewidth]{{{trick_delta_l}}}
+\captionof{figure}{}
+\label{graf:dim_red:}
+\end{Figure}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{trick_test}}}
+\captionof{figure}{}
+\label{graf:dim_red:}
+\end{Figure}
+
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{{{trick_test_tricked}}}
+\captionof{figure}{}
+\label{graf:dim_red:}
+\end{Figure}
+
+\section{Clustering}
+
+\section{Conclusión}
+svm ha sido mejor pero más tiempo para encontrar el correcto
+
+pillar cosas para conclusión
+Judging from the examples you provide, I'm assuming that by ANNs, you mean multilayer feed-forward networks (FF nets for short), such as multilayer perceptrons, because those are in direct competition with SVMs.
+
+One specific benefit that these models have over SVMs is that their size is fixed: they are parametric models, while SVMs are non-parametric. That is, in an ANN you have a bunch of hidden layers with sizes h1 through hn depending on the number of features, plus bias parameters, and those make up your model. By contrast, an SVM (at least a kernelized one) consists of a set of support vectors, selected from the training set, with a weight for each. In the worst case, the number of support vectors is exactly the number of training samples (though that mainly occurs with small training sets or in degenerate cases) and in general its model size scales linearly. In natural language processing, SVM classifiers with tens of thousands of support vectors, each having hundreds of thousands of features, is not unheard of.
+
+Also, online training of FF nets is very simple compared to online SVM fitting, and predicting can be quite a bit faster.
+
+EDIT: all of the above pertains to the general case of kernelized SVMs. Linear SVM are a special case in that they are parametric and allow online learning with simple algorithms such as stochastic gradient descent.
+
+------------------
+
+For example, if the goal was to classify hand-written digits, ten support vector machines would do. Each support vector machine would recognize exactly one digit, and fail to recognize all others. Since each handwritten digit cannot be meant to hold more information than just its class, it makes no sense to try to solve this with an artificial neural network.
+
+However, suppose the goal was to model a person's hormone balance (for several hormones) as a function of easily measured physiological factors such as time since last meal, heart rate, etc ... Since these factors are all inter-related, artificial neural network regression makes more sense than support vector machine regression.
+
+-----------------
+
+One answer I'm missing hear: Multi-layer perceptron is able to find relation between features. For example it is necessary in computer vision when a raw image is provided to the learning algorithm and now Sophisticated features are calculated. Essentially the intermediate levels can calculate new unknown features.
+
+\end{multicols*}
+
+\section{codigo}
+usando el código de las prácticas he escrito mi propio wrapper o API para usarlo
+
+\lstlistoflistings
+
+\lstinputlisting[style=code,caption=main.m]{../main.m}
+\lstinputlisting[style=code,caption=compressData.m]{../compressData.m}
+\lstinputlisting[style=code,caption=decompressData.m]{../decompressData.m}
+\lstinputlisting[style=code,caption=importImages.m]{../importImages.m}
+\lstinputlisting[style=code,caption=makeSets.m]{../makeSets.m}
+\lstinputlisting[style=code,caption=runClustering.m]{../runClustering.m}
+\lstinputlisting[style=code,caption=runDimReduction.m]{../runDimReduction.m}
+\lstinputlisting[style=code,caption=runLogReg.m]{../runLogReg.m}
+\lstinputlisting[style=code,caption=runNNTraining.m]{../runNNTraining.m}
+\lstinputlisting[style=code,caption=runSVMTraining.m]{../runSVMTraining.m}
+\lstinputlisting[style=code,caption=splitDataSet.m]{../splitDataSet.m}
+\lstinputlisting[style=code,caption=logistic\_regression/computePercentageOneVsAll.m]{../logistic_regression/computePercentageOneVsAll.m}
+\lstinputlisting[style=code,caption=logistic\_regression/displayData.m]{../logistic_regression/displayData.m}
+\lstinputlisting[style=code,caption=logistic\_regression/featureNormalize.m]{../logistic_regression/featureNormalize.m}
+\lstinputlisting[style=code,caption=logistic\_regression/fmincg.m]{../logistic_regression/fmincg.m}
+\lstinputlisting[style=code,caption=logistic\_regression/lrCostFunction.m]{../logistic_regression/lrCostFunction.m}
+\lstinputlisting[style=code,caption=logistic\_regression/newCost.m]{../logistic_regression/newCost.m}
+\lstinputlisting[style=code,caption=logistic\_regression/oneVsAll.m]{../logistic_regression/oneVsAll.m}
+\lstinputlisting[style=code,caption=logistic\_regression/plotError.m]{../logistic_regression/plotError.m}
+\lstinputlisting[style=code,caption=logistic\_regression/plotLambda.m]{../logistic_regression/plotLambda.m}
+\lstinputlisting[style=code,caption=logistic\_regression/plotPercentage.m]{../logistic_regression/plotPercentage.m}
+\lstinputlisting[style=code,caption=logistic\_regression/predict.m]{../logistic_regression/predict.m}
+\lstinputlisting[style=code,caption=logistic\_regression/sig.m]{../logistic_regression/sig.m}
+\lstinputlisting[style=code,caption=neural\_network/backPropagation.m]{../neural_network/backPropagation.m}
+\lstinputlisting[style=code,caption=neural\_network/costNN.m]{../neural_network/costNN.m}
+\lstinputlisting[style=code,caption=neural\_network/featureNormalize.m]{../neural_network/featureNormalize.m}
+\lstinputlisting[style=code,caption=neural\_network/fmincg.m]{../neural_network/fmincg.m}
+\lstinputlisting[style=code,caption=neural\_network/forwardProp.m]{../neural_network/forwardProp.m}
+\lstinputlisting[style=code,caption=neural\_network/forwardProp\_pure.m]{../neural_network/forwardProp_pure.m}
+\lstinputlisting[style=code,caption=neural\_network/plotError.m]{../neural_network/plotError.m}
+\lstinputlisting[style=code,caption=neural\_network/plotLambda.m]{../neural_network/plotLambda.m}
+\lstinputlisting[style=code,caption=neural\_network/plotPercentage.m]{../neural_network/plotPercentage.m}
+\lstinputlisting[style=code,caption=neural\_network/randWeights.m]{../neural_network/randWeights.m}
+\lstinputlisting[style=code,caption=neural\_network/runNN.m]{../neural_network/runNN.m}
+\lstinputlisting[style=code,caption=neural\_network/sigDeriv.m]{../neural_network/sigDeriv.m}
+\lstinputlisting[style=code,caption=neural\_network/sig.m]{../neural_network/sig.m}
+\lstinputlisting[style=code,caption=neural\_network/whatIs.m]{../neural_network/whatIs.m}
+\lstinputlisting[style=code,caption=SVM/computePercentageOneVsAll.m]{../SVM/computePercentageOneVsAll.m}
+\lstinputlisting[style=code,caption=SVM/featureNormalize.m]{../SVM/featureNormalize.m}
+\lstinputlisting[style=code,caption=SVM/gaussianKernel.m]{../SVM/gaussianKernel.m}
+\lstinputlisting[style=code,caption=SVM/linearKernel.m]{../SVM/linearKernel.m}
+\lstinputlisting[style=code,caption=SVM/predictOneVsAll.m]{../SVM/predictOneVsAll.m}
+\lstinputlisting[style=code,caption=SVM/splitDataSet.m]{../SVM/splitDataSet.m}
+\lstinputlisting[style=code,caption=SVM/svmPredict.m]{../SVM/svmPredict.m}
+\lstinputlisting[style=code,caption=SVM/svmTrain.m]{../SVM/svmTrain.m}
+\lstinputlisting[style=code,caption=SVM/trainOneVsAll.m]{../SVM/trainOneVsAll.m}
+\lstinputlisting[style=code,caption=dimensionality\_reduction/chooseK.m]{../dimensionality_reduction/chooseK.m}
+\lstinputlisting[style=code,caption=dimensionality\_reduction/pca.m]{../dimensionality_reduction/pca.m}
+\lstinputlisting[style=code,caption=dimensionality\_reduction/plotData.m]{../dimensionality_reduction/plotData.m}
+\lstinputlisting[style=code,caption=dimensionality\_reduction/preprocessData.m]{../dimensionality_reduction/preprocessData.m}
+\lstinputlisting[style=code,caption=clustering/computeCentroids.m]{../clustering/computeCentroids.m}
+\lstinputlisting[style=code,caption=clustering/displayData.m]{../clustering/displayData.m}
+\lstinputlisting[style=code,caption=clustering/drawLine.m]{../clustering/drawLine.m}
+\lstinputlisting[style=code,caption=clustering/findClosestCentroids.m]{../clustering/findClosestCentroids.m}
+\lstinputlisting[style=code,caption=clustering/plotDataPoints.m]{../clustering/plotDataPoints.m}
+\lstinputlisting[style=code,caption=clustering/plotProgresskMeans.m]{../clustering/plotProgresskMeans.m}
+\lstinputlisting[style=code,caption=clustering/runkMeans.m]{../clustering/runkMeans.m}
+
+\end{document}
